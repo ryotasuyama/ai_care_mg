@@ -24,4 +24,9 @@ export class PiiPlaceholder {
     const token = `{${category.toUpperCase()}_${String(sequence).padStart(3, '0')}}`;
     return new PiiPlaceholder(category, token, originalValue);
   }
+
+  /** DB 等の永続層から復元する場合に使う (バリデーションなし) */
+  static reconstruct(category: PiiCategory, token: string, originalValue: string): PiiPlaceholder {
+    return new PiiPlaceholder(category, token, originalValue);
+  }
 }
