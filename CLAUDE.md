@@ -59,6 +59,14 @@ src/
 
 ## PR ワークフロー
 
+**実装を始める前に必ずブランチを作成すること。main への直接コミットは禁止。**
+
+```bash
+# 実装開始時に必ず実行する
+git checkout -b task-N          # タスク番号がある場合
+git checkout -b feat/description  # 機能追加の場合
+```
+
 - ブランチ: `task-N` または `feat/description`
 - PR タイトルプレフィックス: `[Domain]` / `[Usecase]` / `[Infra]` / `[App]` / `[UI]` / `[Test]` / `[DB]` / `[CI]` / `[Docs]`
 - PR サイズ目標: 300〜500 行
