@@ -63,6 +63,80 @@ src/
 - PR タイトルプレフィックス: `[Domain]` / `[Usecase]` / `[Infra]` / `[App]` / `[UI]` / `[Test]` / `[DB]` / `[CI]` / `[Docs]`
 - PR サイズ目標: 300〜500 行
 
+## GitHub 操作
+
+### git worktree — 複数ブランチの同時編集
+
+別ブランチの作業を並行して進める際は `git checkout` で切り替えず、`git worktree` を使う。
+
+```bash
+# 既存ブランチを別ディレクトリで開く
+git worktree add ../ai_care_mg-<branch-name> <branch-name>
+
+# 新ブランチを作りながら別ディレクトリで開く
+git worktree add -b feat/new-feature ../ai_care_mg-feat-new-feature main
+
+# 一覧確認
+git worktree list
+
+# 作業完了後に削除
+git worktree remove ../ai_care_mg-<branch-name>
+```
+
+**運用ルール**
+
+- worktree ディレクトリ名は `../ai_care_mg-<branch-name>` に統一する
+- 各 worktree で `npm install` が必要（`node_modules` は共有されない）
+- `.env.local` は gitignore 対象のため手動コピーする
+- worktree を削除する前にブランチが不要でないか確認する
+
+### GitHub CLI (gh)
+
+```bash
+# PR 作成（タイトルプレフィックスは既存ルール参照）
+gh pr create --title "[Domain] 説明" --base main
+
+# PR 一覧・詳細確認
+gh pr list
+gh pr view [番号]
+gh pr view --web   # ブラウザで開く
+
+# CI ステータス確認
+gh pr checks
+
+# レビュー依頼
+gh pr edit --add-reviewer <username>
+
+# PR マージ（squash merge を使う）
+gh pr merge --squash --delete-branch
+
+# Issue 確認・作成
+gh issue list
+gh issue create
+```
+
+### コンフリクト解消手順
+
+`merge commit` を作らず、`rebase` で解消する。
+
+```bash
+# 1. main の最新を取得
+git fetch origin main
+
+# 2. 現在のブランチを main に rebase
+git rebase origin/main
+
+# 3. コンフリクトを解消後
+git add <解消したファイル>
+git rebase --continue
+
+# 4. force push（--force は使わず --force-with-lease を使う）
+git push --force-with-lease
+```
+
+- rebase 中に問題が起きた場合: `git rebase --abort` で元の状態に戻す
+- `--force-with-lease` は他の人が push していた場合に失敗するため、上書き事故を防ぐ
+
 ## 完了チェックリスト（PR マージ前）
 
 ```bash
