@@ -1,14 +1,23 @@
 import Link from 'next/link';
 import { getCurrentAuth } from '@/infrastructure/auth/getCurrentAuth';
+import { createSupabaseServerClient } from '@/infrastructure/supabase/server';
+import { UserMenu } from './UserMenu';
 
 export async function AppHeader() {
   let isAuthenticated = false;
-  let userInitial = '';
+  let userProfile: { display_name: string; email: string; role: string } | null = null;
 
   try {
     const auth = await getCurrentAuth();
     isAuthenticated = true;
-    userInitial = auth.userId.charAt(0).toUpperCase();
+
+    const supabase = await createSupabaseServerClient();
+    const { data } = await supabase
+      .from('app_users')
+      .select('display_name, email, role')
+      .eq('id', auth.userId)
+      .single();
+    userProfile = data;
   } catch {
     // unauthenticated — show minimal header
   }
@@ -72,9 +81,11 @@ export async function AppHeader() {
               </Link>
             </nav>
 
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-sm font-medium text-white">
-              {userInitial || 'U'}
-            </div>
+            <UserMenu
+              displayName={userProfile?.display_name ?? ''}
+              email={userProfile?.email ?? ''}
+              role={userProfile?.role ?? 'care_manager'}
+            />
           </div>
         )}
       </div>
