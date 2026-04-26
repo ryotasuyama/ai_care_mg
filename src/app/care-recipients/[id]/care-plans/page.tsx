@@ -4,6 +4,7 @@ import { getCurrentAuth } from '@/infrastructure/auth/getCurrentAuth';
 import { buildContainer } from '@/infrastructure/di/container';
 import { UseCaseError } from '@/application/shared/UseCaseError';
 import { CARE_PLAN_STATUS_LABELS } from '@/domain/care-management/care-plan/CarePlanStatus';
+import { RecipientTabNav } from '@/components/care-recipients/RecipientTabNav';
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -25,43 +26,57 @@ export default async function RecipientCarePlansPage({ params }: Props) {
   const items = await container.listCarePlansUseCase.execute({ auth, careRecipientId: id });
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8">
-      <div className="mb-6">
+    <div className="mx-auto max-w-4xl px-4 py-6">
+      {/* Header */}
+      <div className="mb-4 flex items-center justify-between gap-4">
+        <div className="flex min-w-0 items-center gap-2">
+          <Link href="/care-recipients" className="shrink-0 text-sm text-gray-500 hover:text-gray-700">
+            ← 一覧
+          </Link>
+          <h1 className="truncate text-xl font-semibold text-gray-900 sm:text-2xl">
+            {recipient.fullName}
+          </h1>
+        </div>
         <Link
-          href={`/care-recipients/${id}`}
-          className="text-sm text-gray-500 hover:text-gray-700"
+          href={`/care-recipients/${id}/edit`}
+          className="shrink-0 rounded-md bg-gray-100 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-200"
         >
-          ← {recipient.fullName}
+          編集
         </Link>
-        <h1 className="mt-2 text-2xl font-semibold text-gray-900">ケアプラン</h1>
       </div>
 
-      {items.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-gray-300 p-8 text-center text-sm text-gray-500">
-          ケアプランはまだ作成されていません。確定済みアセスメントから作成できます。
-        </div>
-      ) : (
-        <ul className="divide-y divide-gray-100 rounded-lg border border-gray-200 bg-white shadow-sm">
-          {items.map((p) => (
-            <li key={p.id}>
-              <Link
-                href={`/care-recipients/${id}/care-plans/${p.id}`}
-                className="block px-6 py-4 hover:bg-gray-50"
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-gray-900">{p.planNumber}</p>
-                    <p className="text-xs text-gray-500">
-                      {p.planPeriodFrom} 〜 {p.planPeriodTo}
-                    </p>
+      {/* Tab navigation */}
+      <RecipientTabNav recipientId={id} />
+
+      {/* Content */}
+      <div className="mt-6">
+        {items.length === 0 ? (
+          <div className="rounded-lg border border-dashed border-gray-300 p-8 text-center text-sm text-gray-500">
+            ケアプランはまだ作成されていません。確定済みアセスメントから作成できます。
+          </div>
+        ) : (
+          <ul className="divide-y divide-gray-100 rounded-lg border border-gray-200 bg-white shadow-sm">
+            {items.map((p) => (
+              <li key={p.id}>
+                <Link
+                  href={`/care-recipients/${id}/care-plans/${p.id}`}
+                  className="block px-6 py-4 hover:bg-gray-50"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-gray-900">{p.planNumber}</p>
+                      <p className="text-xs text-gray-500">
+                        {p.planPeriodFrom} 〜 {p.planPeriodTo}
+                      </p>
+                    </div>
+                    <StatusBadge status={p.status} />
                   </div>
-                  <StatusBadge status={p.status} />
-                </div>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      )}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }
