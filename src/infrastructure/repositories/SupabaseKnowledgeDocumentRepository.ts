@@ -5,7 +5,8 @@ import { KnowledgeDocument } from '@/domain/knowledge/document/KnowledgeDocument
 import { KnowledgeDocumentId } from '@/domain/knowledge/document/KnowledgeDocumentId';
 import type { TenantId } from '@/domain/shared/TenantId';
 import { KnowledgeDocumentMapper } from './mappers/KnowledgeDocumentMapper';
-import { OptimisticLockError, RepositoryError } from './SupabaseAssessmentRepository';
+import { OptimisticLockError } from '@/domain/shared/errors/OptimisticLockError';
+import { RepositoryError } from './SupabaseAssessmentRepository';
 
 type DocRow = Database['public']['Tables']['knowledge_documents']['Row'];
 type ChunkRow = Database['public']['Tables']['knowledge_chunks']['Row'];

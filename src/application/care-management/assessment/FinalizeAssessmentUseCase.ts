@@ -7,7 +7,7 @@ import { AssessmentId } from '@/domain/care-management/assessment/AssessmentId';
 import type { IAssessmentRepository } from '@/domain/care-management/assessment/IAssessmentRepository';
 import { IllegalStateTransitionError } from '@/domain/shared/errors/IllegalStateTransitionError';
 import { AssessmentValidationError } from '@/domain/care-management/assessment/AssessmentValidationError';
-import { OptimisticLockError } from '@/infrastructure/repositories/SupabaseAssessmentRepository';
+import { OptimisticLockError } from '@/domain/shared/errors/OptimisticLockError';
 
 export const finalizeAssessmentSchema = z.object({
   assessmentId: z.string().uuid('IDが不正です'),

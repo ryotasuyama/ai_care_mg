@@ -6,7 +6,8 @@ import { CarePlanId } from '@/domain/care-management/care-plan/CarePlanId';
 import type { CareRecipientId } from '@/domain/care-management/care-recipient/CareRecipientId';
 import type { TenantId } from '@/domain/shared/TenantId';
 import { CarePlanMapper } from './mappers/CarePlanMapper';
-import { OptimisticLockError, RepositoryError } from './SupabaseAssessmentRepository';
+import { OptimisticLockError } from '@/domain/shared/errors/OptimisticLockError';
+import { RepositoryError } from './SupabaseAssessmentRepository';
 import { UseCaseError } from '@/application/shared/UseCaseError';
 
 type PlanRow = Database['public']['Tables']['care_plans']['Row'];

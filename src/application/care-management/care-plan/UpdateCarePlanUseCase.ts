@@ -14,7 +14,7 @@ import { ServiceItemId } from '@/domain/care-management/care-plan/ServiceItemId'
 import { PlanPeriod } from '@/domain/care-management/care-plan/PlanPeriod';
 import { CarePlanValidationError } from '@/domain/care-management/care-plan/CarePlanValidationError';
 import { IllegalStateTransitionError } from '@/domain/shared/errors/IllegalStateTransitionError';
-import { OptimisticLockError } from '@/infrastructure/repositories/SupabaseAssessmentRepository';
+import { OptimisticLockError } from '@/domain/shared/errors/OptimisticLockError';
 
 const datePattern = /^\d{4}-\d{2}-\d{2}$/;
 

@@ -7,7 +7,7 @@ import { CarePlanId } from '@/domain/care-management/care-plan/CarePlanId';
 import type { ICarePlanRepository } from '@/domain/care-management/care-plan/ICarePlanRepository';
 import { CarePlanValidationError } from '@/domain/care-management/care-plan/CarePlanValidationError';
 import { IllegalStateTransitionError } from '@/domain/shared/errors/IllegalStateTransitionError';
-import { OptimisticLockError } from '@/infrastructure/repositories/SupabaseAssessmentRepository';
+import { OptimisticLockError } from '@/domain/shared/errors/OptimisticLockError';
 
 export const finalizeCarePlanSchema = z.object({
   carePlanId: z.string().uuid(),

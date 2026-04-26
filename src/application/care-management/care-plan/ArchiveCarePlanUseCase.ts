@@ -6,7 +6,7 @@ import { TenantId } from '@/domain/shared/TenantId';
 import { CarePlanId } from '@/domain/care-management/care-plan/CarePlanId';
 import type { ICarePlanRepository } from '@/domain/care-management/care-plan/ICarePlanRepository';
 import { IllegalStateTransitionError } from '@/domain/shared/errors/IllegalStateTransitionError';
-import { OptimisticLockError } from '@/infrastructure/repositories/SupabaseAssessmentRepository';
+import { OptimisticLockError } from '@/domain/shared/errors/OptimisticLockError';
 
 export const archiveCarePlanSchema = z.object({
   carePlanId: z.string().uuid(),
