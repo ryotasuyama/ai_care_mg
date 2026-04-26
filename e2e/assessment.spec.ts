@@ -35,7 +35,8 @@ test.describe('アセスメント作成フロー', () => {
     await page.waitForURL('**/care-recipients');
 
     // 利用者詳細へ
-    await page.click(`text=${recipientName}`);
+    await page.getByRole('row', { name: recipientName }).getByRole('link', { name: '詳細' }).click();
+    await page.waitForURL('**/care-recipients/**');
     const recipientUrl = page.url();
 
     // アセスメント新規作成
@@ -48,28 +49,22 @@ test.describe('アセスメント作成フロー', () => {
       });
     }
 
-    await page.fill(
-      'textarea[name="voiceTranscript"]',
+    await page.getByTestId('voice-transcript').fill(
       `${recipientName}さんは膝の痛みがあります。090-1234-5678 まで連絡ください。`,
     );
     await page.click('button[type="submit"]');
 
-    // マスキングプレビュー画面
+    // マスキング確認画面
     await page.waitForURL('**/preview/**');
-    await expect(page.locator('text=マスキングプレビュー')).toBeVisible();
-    // 利用者名がマスクされていること
-    await expect(page.locator(`text=${recipientName}`)).not.toBeVisible();
+    await expect(page.locator('text=マスキング確認')).toBeVisible();
+    // マスク済みテキスト欄には利用者名が含まれないこと（プレースホルダに置換されている）
+    await expect(page.locator('textarea').first()).not.toContainText(recipientName);
 
-    // CI では Gemini を mock（Server Action レスポンスをインターセプト）
-    // ※ Next.js Server Action は同一 URL への POST なので route は効かない
-    // 代わりに手動スキップ or 実際の API を使う
+    // マスク済みテキストにプレースホルダが含まれていること
+    await expect(page.locator('textarea').first()).toContainText('{RECIPIENT_NAME_001}');
 
-    if (!IS_CI) {
-      // Gemini 呼び出しを実行してアセスメント生成（実際の API キーが必要）
-      await page.click('button[type="submit"]');
-      await page.waitForURL('**/assessments/**', { timeout: 30_000 });
-      await expect(page.locator('h1')).toContainText('アセスメント');
-    }
+    // NOTE: Gemini による確定（アセスメント生成）はリアルタイム API 依存のため
+    // E2E スコープ外とし、手動検証または別途統合テストで確認する。
   });
 
   test('別テナントユーザーにはアセスメントが見えないこと (RLS)', async () => {

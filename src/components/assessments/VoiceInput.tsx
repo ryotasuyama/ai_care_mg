@@ -143,6 +143,7 @@ export function VoiceInput({ value, onChange }: Props) {
       {errorMessage && <p className="text-sm text-red-600">{errorMessage}</p>}
 
       <textarea
+        data-testid="voice-transcript"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         rows={10}
