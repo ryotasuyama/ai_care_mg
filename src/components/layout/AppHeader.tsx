@@ -38,6 +38,12 @@ export async function AppHeader() {
               >
                 アセスメント一覧
               </Link>
+              <Link
+                href="/knowledge"
+                className="rounded-md px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+              >
+                ナレッジ
+              </Link>
             </nav>
           )}
         </div>
@@ -57,6 +63,12 @@ export async function AppHeader() {
                 className="rounded-md px-2 py-1 text-xs font-medium text-gray-600 hover:bg-gray-100"
               >
                 アセスメント
+              </Link>
+              <Link
+                href="/knowledge"
+                className="rounded-md px-2 py-1 text-xs font-medium text-gray-600 hover:bg-gray-100"
+              >
+                ナレッジ
               </Link>
             </nav>
 
