@@ -53,6 +53,12 @@ export async function AppHeader() {
               >
                 ナレッジ
               </Link>
+              <Link
+                href="/email-reply"
+                className="rounded-md px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+              >
+                メール返信
+              </Link>
             </nav>
           )}
         </div>
@@ -78,6 +84,12 @@ export async function AppHeader() {
                 className="rounded-md px-2 py-1 text-xs font-medium text-gray-600 hover:bg-gray-100"
               >
                 ナレッジ
+              </Link>
+              <Link
+                href="/email-reply"
+                className="rounded-md px-2 py-1 text-xs font-medium text-gray-600 hover:bg-gray-100"
+              >
+                メール返信
               </Link>
             </nav>
 
