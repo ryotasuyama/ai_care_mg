@@ -57,7 +57,29 @@ SUPABASE_SERVICE_ROLE_KEY=<supabase start の service_role key>
 
 # App
 NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# AI
+GEMINI_API_KEY=<Google AI Studio から取得>
+
+# Cron（本番 Vercel でのみ必要）
+CRON_SECRET=<ランダムな秘密鍵>
+
+# エラー監視（任意）
+SENTRY_DSN=<Sentry プロジェクトの DSN>
+NEXT_PUBLIC_SENTRY_DSN=<同上（クライアント側）>
 ```
+
+### 環境変数チェックリスト（本番デプロイ前）
+
+| 変数 | 必須 | 説明 |
+|------|------|------|
+| `NEXT_PUBLIC_SUPABASE_URL` | ✅ | Supabase プロジェクト URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | ✅ | Supabase anon key |
+| `SUPABASE_SERVICE_ROLE_KEY` | ✅ | Supabase service_role key（Cron 用） |
+| `GEMINI_API_KEY` | ✅ | Google Gemini API キー |
+| `CRON_SECRET` | ✅ | Vercel Cron ジョブ認証用シークレット |
+| `SENTRY_DSN` | 推奨 | Sentry エラー監視 DSN（サーバー側） |
+| `NEXT_PUBLIC_SENTRY_DSN` | 推奨 | Sentry エラー監視 DSN（クライアント側） |
 
 > **本番環境（Vercel）**: Supabase ダッシュボードの Project Settings → API から取得した値を Vercel の環境変数に設定する。
 
@@ -102,32 +124,59 @@ INSERT INTO tenants (name) VALUES ('テスト事業所') RETURNING id;
 
 PR タイトルプレフィックス: `[Domain]` / `[Usecase]` / `[Infra]` / `[App]` / `[UI]` / `[Test]` / `[DB]` / `[CI]` / `[Docs]`
 
+## Vercel デプロイ手順（概要）
+
+1. Vercel にプロジェクトを接続（GitHub リポジトリ連携）
+2. Vercel の Environment Variables に上記 7 変数を設定
+3. Supabase プロジェクトのマイグレーションを適用:
+   ```bash
+   supabase link --project-ref <PROJECT_REF>
+   supabase db push
+   ```
+4. Vercel にデプロイ（`main` ブランチへの push で自動デプロイ）
+5. `vercel.json` に定義された Cron ジョブが自動的に有効化される
+
 ## ドキュメント
 
 | ファイル | 内容 |
 |---|---|
 | `docs/care-manager-ai-design.md` | 全体設計（コンテキスト・利用者集約・共通原則） |
 | `docs/ai_care_mg.md` | 要件定義書 |
-| `docs/implementation/01-foundation-and-care-recipient.md` | 実装計画 01（本フェーズ） |
-| `docs/implementation/02-ai-support-infrastructure.md` | 実装計画 02（次フェーズ） |
+| `docs/implementation/01-foundation-and-care-recipient.md` | 実装計画 01 |
+| `docs/implementation/02-ai-support-infrastructure.md` | 実装計画 02 |
+| `docs/implementation/03-assessment-aggregate.md` | 実装計画 03 |
+| `docs/implementation/04-knowledge-and-care-plan.md` | 実装計画 04 |
+| `docs/implementation/05-communication-and-ops.md` | 実装計画 05（本フェーズ） |
+| `CHANGELOG.md` | リリースノート |
 
 ## ディレクトリ構成（概要）
 
 ```
 src/
 ├── app/                  # Next.js App Router（ページ・Server Actions）
+│   ├── email-reply/      # メール返信ドラフト生成
+│   ├── care-recipients/  # 利用者管理・アセスメント・ケアプラン
+│   ├── knowledge/        # ナレッジ管理
+│   └── api/cron/         # Vercel Cron ジョブ
 ├── application/          # ユースケース層
 │   ├── care-management/
+│   ├── communication/    # DraftEmailReplyUseCase
+│   ├── knowledge/
 │   └── shared/           # AuthorizationContext, IUseCase, UseCaseError
 ├── domain/               # ドメイン層（フレームワーク非依存）
-│   ├── care-management/
+│   ├── care-management/  # Assessment, CarePlan, CareRecipient 集約
+│   ├── knowledge/
+│   ├── ai-support/       # AI サービスインターフェース・PII マスキング
 │   └── shared/           # TenantId, UserId, DomainError
 ├── infrastructure/       # 実装層
 │   ├── supabase/         # サーバー・ブラウザクライアント
-│   ├── repositories/     # SupabaseCareRecipientRepository
+│   ├── repositories/     # Supabase 実装
+│   ├── ai/               # Gemini クライアント・プロンプト・マスキング
 │   ├── auth/             # getCurrentAuth
 │   └── di/               # DI コンテナ
-├── components/           # 共通 UI コンポーネント
+├── components/           # UI コンポーネント（Client Components）
+├── lib/
+│   └── withSentry.ts     # Server Action エラー捕捉 wrapper
 ├── types/
 │   └── database.ts       # Supabase 自動生成型（編集禁止）
 └── config.ts             # 環境変数の集約
