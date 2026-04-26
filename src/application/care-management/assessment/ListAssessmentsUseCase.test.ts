@@ -65,6 +65,7 @@ function makeRecipientRepo(recipients: CareRecipient[]): ICareRecipientRepositor
     findById: vi.fn(),
     findAll: vi.fn().mockResolvedValue(recipients),
     save: vi.fn(),
+    delete: vi.fn(),
     buildKnownPiiSetForTenant: vi.fn(),
   };
 }

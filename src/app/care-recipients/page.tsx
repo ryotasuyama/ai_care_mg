@@ -3,6 +3,7 @@ import { getCurrentAuth } from '@/infrastructure/auth/getCurrentAuth';
 import { buildContainer } from '@/infrastructure/di/container';
 import { CARE_LEVEL_LABELS } from '@/domain/care-management/care-recipient/CareLevel';
 import type { CareLevelValue } from '@/domain/care-management/care-recipient/CareLevel';
+import { DeleteRecipientButton } from '@/components/care-recipients/DeleteRecipientButton';
 
 export const metadata = { title: '利用者一覧 — ケアマネAI' };
 
@@ -43,9 +44,6 @@ export default async function CareRecipientsPage() {
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                     要介護度
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                    住所
-                  </th>
                   <th className="relative px-6 py-3">
                     <span className="sr-only">操作</span>
                   </th>
@@ -62,14 +60,16 @@ export default async function CareRecipientsPage() {
                         {CARE_LEVEL_LABELS[r.currentCareLevel as CareLevelValue]}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">{r.address}</td>
                     <td className="whitespace-nowrap px-6 py-4 text-right text-sm">
-                      <Link
-                        href={`/care-recipients/${r.id}`}
-                        className="text-blue-600 hover:text-blue-800"
-                      >
-                        詳細
-                      </Link>
+                      <div className="flex items-center justify-end gap-4">
+                        <Link
+                          href={`/care-recipients/${r.id}`}
+                          className="text-blue-600 hover:text-blue-800"
+                        >
+                          詳細
+                        </Link>
+                        <DeleteRecipientButton id={r.id} fullName={r.fullName} />
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -80,15 +80,12 @@ export default async function CareRecipientsPage() {
           {/* Mobile: カードリスト */}
           <ul className="flex flex-col gap-2 sm:hidden">
             {recipients.map((r) => (
-              <li key={r.id}>
+              <li key={r.id} className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white shadow-sm">
                 <Link
                   href={`/care-recipients/${r.id}`}
-                  className="flex items-center justify-between rounded-lg border border-gray-200 bg-white px-4 py-3 shadow-sm hover:bg-gray-50"
+                  className="flex min-w-0 flex-1 items-center justify-between px-4 py-3 hover:bg-gray-50"
                 >
-                  <div className="min-w-0">
-                    <p className="truncate font-medium text-gray-900">{r.fullName}</p>
-                    <p className="mt-0.5 truncate text-xs text-gray-500">{r.address}</p>
-                  </div>
+                  <p className="truncate font-medium text-gray-900">{r.fullName}</p>
                   <div className="ml-3 flex shrink-0 items-center gap-2">
                     <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">
                       {CARE_LEVEL_LABELS[r.currentCareLevel as CareLevelValue]}
@@ -96,6 +93,9 @@ export default async function CareRecipientsPage() {
                     <span className="text-sm text-blue-600">›</span>
                   </div>
                 </Link>
+                <div className="shrink-0 px-3">
+                  <DeleteRecipientButton id={r.id} fullName={r.fullName} />
+                </div>
               </li>
             ))}
           </ul>

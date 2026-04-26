@@ -66,6 +66,23 @@ export async function updateCareRecipientAction(
   redirect(`/care-recipients/${id}`);
 }
 
+export async function deleteCareRecipientAction(id: string): Promise<ActionResult> {
+  const auth = await getCurrentAuth();
+  const container = await buildContainer();
+
+  try {
+    await container.deleteCareRecipientUseCase.execute({ auth, id });
+  } catch (error) {
+    if (error instanceof UseCaseError) {
+      return { error: error.message };
+    }
+    return { error: '予期しないエラーが発生しました' };
+  }
+
+  revalidatePath('/care-recipients');
+  redirect('/care-recipients');
+}
+
 function parseFamilyMembers(formData: FormData) {
   const raw = formData.get('familyMembers') as string;
   if (!raw) return [];
