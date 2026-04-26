@@ -12,7 +12,7 @@ export default async function CareRecipientsPage() {
   const recipients = await container.listCareRecipientsUseCase.execute({ auth });
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8">
+    <div className="mx-auto max-w-6xl px-4 py-8">
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-semibold text-gray-900">利用者一覧</h1>
         <Link
@@ -31,49 +31,75 @@ export default async function CareRecipientsPage() {
           </Link>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  氏名
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  要介護度
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  住所
-                </th>
-                <th className="relative px-6 py-3">
-                  <span className="sr-only">操作</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
-              {recipients.map((r) => (
-                <tr key={r.id} className="hover:bg-gray-50">
-                  <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
-                    {r.fullName}
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+        <>
+          {/* PC: テーブル */}
+          <div className="hidden overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm sm:block">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    氏名
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    要介護度
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    住所
+                  </th>
+                  <th className="relative px-6 py-3">
+                    <span className="sr-only">操作</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200 bg-white">
+                {recipients.map((r) => (
+                  <tr key={r.id} className="hover:bg-gray-50">
+                    <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
+                      {r.fullName}
+                    </td>
+                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                      <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">
+                        {CARE_LEVEL_LABELS[r.currentCareLevel as CareLevelValue]}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-500">{r.address}</td>
+                    <td className="whitespace-nowrap px-6 py-4 text-right text-sm">
+                      <Link
+                        href={`/care-recipients/${r.id}`}
+                        className="text-blue-600 hover:text-blue-800"
+                      >
+                        詳細
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile: カードリスト */}
+          <ul className="flex flex-col gap-2 sm:hidden">
+            {recipients.map((r) => (
+              <li key={r.id}>
+                <Link
+                  href={`/care-recipients/${r.id}`}
+                  className="flex items-center justify-between rounded-lg border border-gray-200 bg-white px-4 py-3 shadow-sm hover:bg-gray-50"
+                >
+                  <div className="min-w-0">
+                    <p className="truncate font-medium text-gray-900">{r.fullName}</p>
+                    <p className="mt-0.5 truncate text-xs text-gray-500">{r.address}</p>
+                  </div>
+                  <div className="ml-3 flex shrink-0 items-center gap-2">
                     <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">
                       {CARE_LEVEL_LABELS[r.currentCareLevel as CareLevelValue]}
                     </span>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-500">{r.address}</td>
-                  <td className="whitespace-nowrap px-6 py-4 text-right text-sm">
-                    <Link
-                      href={`/care-recipients/${r.id}`}
-                      className="text-blue-600 hover:text-blue-800"
-                    >
-                      詳細
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                    <span className="text-sm text-blue-600">›</span>
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </>
       )}
     </div>
   );
