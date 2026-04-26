@@ -29,6 +29,7 @@ function makeMockCareRecipientRepo(): ICareRecipientRepository {
     findById: vi.fn(),
     findAll: vi.fn(),
     save: vi.fn(),
+    delete: vi.fn(),
     buildKnownPiiSetForTenant: vi.fn().mockResolvedValue({
       names: ['田中太郎'],
       aliases: ['田中'],

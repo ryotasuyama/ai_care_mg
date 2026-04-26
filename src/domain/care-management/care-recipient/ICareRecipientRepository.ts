@@ -11,6 +11,7 @@ export interface ICareRecipientRepository {
   findById(id: CareRecipientId, tenantId: TenantId): Promise<CareRecipient | null>;
   findAll(tenantId: TenantId): Promise<CareRecipient[]>;
   save(careRecipient: CareRecipient): Promise<void>;
+  delete(id: CareRecipientId, tenantId: TenantId): Promise<void>;
 
   /**
    * テナント内の全利用者から KnownPiiSet を構築。

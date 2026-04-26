@@ -13,6 +13,7 @@ import { RegisterCareRecipientUseCase } from '@/application/care-management/care
 import { UpdateCareRecipientUseCase } from '@/application/care-management/care-recipient/UpdateCareRecipientUseCase';
 import { GetCareRecipientUseCase } from '@/application/care-management/care-recipient/GetCareRecipientUseCase';
 import { ListCareRecipientsUseCase } from '@/application/care-management/care-recipient/ListCareRecipientsUseCase';
+import { DeleteCareRecipientUseCase } from '@/application/care-management/care-recipient/DeleteCareRecipientUseCase';
 import { PrepareAssessmentDraftUseCase } from '@/application/care-management/assessment/PrepareAssessmentDraftUseCase';
 import { GenerateAssessmentFromMaskedTextUseCase } from '@/application/care-management/assessment/GenerateAssessmentFromMaskedTextUseCase';
 import { GetAssessmentForViewUseCase } from '@/application/care-management/assessment/GetAssessmentForViewUseCase';
@@ -80,6 +81,7 @@ export async function buildContainer() {
     updateCareRecipientUseCase: new UpdateCareRecipientUseCase(careRecipientRepo),
     getCareRecipientUseCase: new GetCareRecipientUseCase(careRecipientRepo),
     listCareRecipientsUseCase: new ListCareRecipientsUseCase(careRecipientRepo),
+    deleteCareRecipientUseCase: new DeleteCareRecipientUseCase(careRecipientRepo),
     prepareAssessmentDraftUseCase: new PrepareAssessmentDraftUseCase(
       careRecipientRepo,
       piiMaskingService,

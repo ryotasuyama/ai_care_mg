@@ -57,6 +57,15 @@ export class SupabaseCareRecipientRepository implements ICareRecipientRepository
     }
   }
 
+  async delete(id: CareRecipientId, tenantId: TenantId): Promise<void> {
+    const { error } = await this.supabase
+      .from('care_recipients')
+      .delete()
+      .eq('id', id.value)
+      .eq('tenant_id', tenantId.value);
+    if (error) throw new Error(`Failed to delete care recipient: ${error.message}`);
+  }
+
   async buildKnownPiiSetForTenant(tenantId: TenantId): Promise<KnownPiiSet> {
     const recipients = await this.findAll(tenantId);
     const names: string[] = [];
