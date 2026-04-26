@@ -19,4 +19,7 @@ export const config = {
   cron: {
     secret: process.env['CRON_SECRET'] ?? '',
   },
+  sentry: {
+    dsn: process.env['SENTRY_DSN'] ?? '',
+  },
 } as const;
