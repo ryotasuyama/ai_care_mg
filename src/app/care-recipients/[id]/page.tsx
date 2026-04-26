@@ -32,12 +32,32 @@ export default async function CareRecipientDetailPage({ params }: Props) {
           </Link>
           <h1 className="text-2xl font-semibold text-gray-900">{recipient.fullName}</h1>
         </div>
-        <Link
-          href={`/care-recipients/${id}/edit`}
-          className="rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200"
-        >
-          編集
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href={`/care-recipients/${id}/assessments`}
+            className="rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200"
+          >
+            アセスメント
+          </Link>
+          <Link
+            href={`/care-recipients/${id}/care-plans`}
+            className="rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200"
+          >
+            ケアプラン
+          </Link>
+          <Link
+            href={`/care-recipients/${id}/assessments/new`}
+            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700"
+          >
+            アセスメント新規作成
+          </Link>
+          <Link
+            href={`/care-recipients/${id}/edit`}
+            className="rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200"
+          >
+            編集
+          </Link>
+        </div>
       </div>
 
       <div className="rounded-lg border border-gray-200 bg-white shadow-sm">

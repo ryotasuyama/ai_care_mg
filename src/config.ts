@@ -16,4 +16,7 @@ export const config = {
   gemini: {
     apiKey: required('GEMINI_API_KEY'),
   },
+  cron: {
+    secret: process.env['CRON_SECRET'] ?? '',
+  },
 } as const;

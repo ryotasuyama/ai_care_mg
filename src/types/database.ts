@@ -179,9 +179,452 @@ export interface Database {
           },
         ];
       };
+      assessments: {
+        Row: {
+          id: string;
+          tenant_id: string;
+          care_recipient_id: string;
+          type: 'initial' | 'reassessment';
+          status: 'draft' | 'finalized';
+          conducted_at: string;
+          source_transcript: string;
+          masked_summary: string;
+          placeholder_map: Json;
+          created_by: string;
+          created_at: string;
+          updated_at: string;
+          finalized_at: string | null;
+          version: number;
+        };
+        Insert: {
+          id?: string;
+          tenant_id: string;
+          care_recipient_id: string;
+          type: 'initial' | 'reassessment';
+          status?: 'draft' | 'finalized';
+          conducted_at: string;
+          source_transcript: string;
+          masked_summary: string;
+          placeholder_map: Json;
+          created_by: string;
+          created_at?: string;
+          updated_at?: string;
+          finalized_at?: string | null;
+          version?: number;
+        };
+        Update: {
+          status?: 'draft' | 'finalized';
+          masked_summary?: string;
+          placeholder_map?: Json;
+          updated_at?: string;
+          finalized_at?: string | null;
+          version?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'assessments_tenant_id_fkey';
+            columns: ['tenant_id'];
+            isOneToOne: false;
+            referencedRelation: 'tenants';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'assessments_care_recipient_id_fkey';
+            columns: ['care_recipient_id'];
+            isOneToOne: false;
+            referencedRelation: 'care_recipients';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'assessments_created_by_fkey';
+            columns: ['created_by'];
+            isOneToOne: false;
+            referencedRelation: 'app_users';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      assessment_issues: {
+        Row: {
+          id: string;
+          tenant_id: string;
+          assessment_id: string;
+          sequence_no: number;
+          category: 'health' | 'adl' | 'iadl' | 'cognitive' | 'social' | 'family' | 'other';
+          description: string;
+          priority: 'high' | 'medium' | 'low';
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          tenant_id: string;
+          assessment_id: string;
+          sequence_no: number;
+          category: 'health' | 'adl' | 'iadl' | 'cognitive' | 'social' | 'family' | 'other';
+          description: string;
+          priority: 'high' | 'medium' | 'low';
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          sequence_no?: number;
+          category?: 'health' | 'adl' | 'iadl' | 'cognitive' | 'social' | 'family' | 'other';
+          description?: string;
+          priority?: 'high' | 'medium' | 'low';
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'assessment_issues_assessment_id_fkey';
+            columns: ['assessment_id'];
+            isOneToOne: false;
+            referencedRelation: 'assessments';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      assessment_drafts: {
+        Row: {
+          id: string;
+          tenant_id: string;
+          care_recipient_id: string;
+          original_text: string;
+          masked_text: string;
+          placeholder_map: Json;
+          created_by: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          tenant_id: string;
+          care_recipient_id: string;
+          original_text: string;
+          masked_text: string;
+          placeholder_map: Json;
+          created_by: string;
+          created_at?: string;
+        };
+        Update: {
+          masked_text?: string;
+          placeholder_map?: Json;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'assessment_drafts_tenant_id_fkey';
+            columns: ['tenant_id'];
+            isOneToOne: false;
+            referencedRelation: 'tenants';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'assessment_drafts_care_recipient_id_fkey';
+            columns: ['care_recipient_id'];
+            isOneToOne: false;
+            referencedRelation: 'care_recipients';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      ai_generation_logs: {
+        Row: {
+          id: string;
+          tenant_id: string;
+          kind: string;
+          original_text: string | null;
+          masked_text: string;
+          placeholder_map: Json;
+          masking_stats: Json | null;
+          ai_response: Json;
+          ai_model: string | null;
+          prompt_template_id: string | null;
+          related_entity_type: string | null;
+          related_entity_id: string | null;
+          created_by: string;
+          created_at: string;
+          request_tokens: number | null;
+          response_tokens: number | null;
+          latency_ms: number | null;
+        };
+        Insert: {
+          id?: string;
+          tenant_id: string;
+          kind: string;
+          original_text?: string | null;
+          masked_text: string;
+          placeholder_map: Json;
+          masking_stats?: Json | null;
+          ai_response: Json;
+          ai_model?: string | null;
+          prompt_template_id?: string | null;
+          related_entity_type?: string | null;
+          related_entity_id?: string | null;
+          created_by: string;
+          created_at?: string;
+          request_tokens?: number | null;
+          response_tokens?: number | null;
+          latency_ms?: number | null;
+        };
+        Update: never;
+        Relationships: [];
+      };
+      knowledge_documents: {
+        Row: {
+          id: string;
+          tenant_id: string;
+          scope: 'personal' | 'shared';
+          owner_id: string | null;
+          title: string;
+          source_file_url: string;
+          source_file_path: string;
+          source_file_type: 'pdf' | 'docx' | 'txt';
+          source_file_size_bytes: number;
+          processing_status: 'pending' | 'processing' | 'ready' | 'failed';
+          processing_error: string | null;
+          uploaded_by: string;
+          uploaded_at: string;
+          updated_at: string;
+          ready_at: string | null;
+          version: number;
+        };
+        Insert: {
+          id?: string;
+          tenant_id: string;
+          scope: 'personal' | 'shared';
+          owner_id?: string | null;
+          title: string;
+          source_file_url: string;
+          source_file_path: string;
+          source_file_type: 'pdf' | 'docx' | 'txt';
+          source_file_size_bytes: number;
+          processing_status?: 'pending' | 'processing' | 'ready' | 'failed';
+          processing_error?: string | null;
+          uploaded_by: string;
+          uploaded_at?: string;
+          updated_at?: string;
+          ready_at?: string | null;
+          version?: number;
+        };
+        Update: {
+          title?: string;
+          processing_status?: 'pending' | 'processing' | 'ready' | 'failed';
+          processing_error?: string | null;
+          ready_at?: string | null;
+          version?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'knowledge_documents_tenant_id_fkey';
+            columns: ['tenant_id'];
+            isOneToOne: false;
+            referencedRelation: 'tenants';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      knowledge_chunks: {
+        Row: {
+          id: string;
+          tenant_id: string;
+          document_id: string;
+          scope: 'personal' | 'shared';
+          owner_id: string | null;
+          sequence_no: number;
+          text: string;
+          embedding: string;
+          page_number: number | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          tenant_id: string;
+          document_id: string;
+          scope: 'personal' | 'shared';
+          owner_id?: string | null;
+          sequence_no: number;
+          text: string;
+          embedding: string;
+          page_number?: number | null;
+          created_at?: string;
+        };
+        Update: never;
+        Relationships: [
+          {
+            foreignKeyName: 'knowledge_chunks_document_id_fkey';
+            columns: ['document_id'];
+            isOneToOne: false;
+            referencedRelation: 'knowledge_documents';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      care_plans: {
+        Row: {
+          id: string;
+          tenant_id: string;
+          care_recipient_id: string;
+          assessment_id: string;
+          plan_number: string;
+          plan_period_from: string;
+          plan_period_to: string;
+          status: 'draft' | 'finalized' | 'archived';
+          created_by: string;
+          created_at: string;
+          updated_at: string;
+          finalized_at: string | null;
+          version: number;
+        };
+        Insert: {
+          id?: string;
+          tenant_id: string;
+          care_recipient_id: string;
+          assessment_id: string;
+          plan_number: string;
+          plan_period_from: string;
+          plan_period_to: string;
+          status?: 'draft' | 'finalized' | 'archived';
+          created_by: string;
+          created_at?: string;
+          updated_at?: string;
+          finalized_at?: string | null;
+          version?: number;
+        };
+        Update: {
+          plan_number?: string;
+          plan_period_from?: string;
+          plan_period_to?: string;
+          status?: 'draft' | 'finalized' | 'archived';
+          updated_at?: string;
+          finalized_at?: string | null;
+          version?: number;
+        };
+        Relationships: [];
+      };
+      care_plan_long_term_goals: {
+        Row: {
+          id: string;
+          tenant_id: string;
+          care_plan_id: string;
+          sequence_no: number;
+          title: string;
+          description: string | null;
+          target_period_from: string;
+          target_period_to: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          tenant_id: string;
+          care_plan_id: string;
+          sequence_no: number;
+          title: string;
+          description?: string | null;
+          target_period_from: string;
+          target_period_to: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: never;
+        Relationships: [];
+      };
+      care_plan_short_term_goals: {
+        Row: {
+          id: string;
+          tenant_id: string;
+          care_plan_id: string;
+          parent_long_term_goal_id: string;
+          sequence_no: number;
+          title: string;
+          description: string | null;
+          target_period_from: string;
+          target_period_to: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          tenant_id: string;
+          care_plan_id: string;
+          parent_long_term_goal_id: string;
+          sequence_no: number;
+          title: string;
+          description?: string | null;
+          target_period_from: string;
+          target_period_to: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: never;
+        Relationships: [];
+      };
+      care_plan_service_items: {
+        Row: {
+          id: string;
+          tenant_id: string;
+          care_plan_id: string;
+          related_short_term_goal_id: string | null;
+          sequence_no: number;
+          service_type: string;
+          service_name: string;
+          frequency_text: string | null;
+          frequency_per_week: number | null;
+          provider_name: string | null;
+          remarks: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          tenant_id: string;
+          care_plan_id: string;
+          related_short_term_goal_id?: string | null;
+          sequence_no: number;
+          service_type: string;
+          service_name: string;
+          frequency_text?: string | null;
+          frequency_per_week?: number | null;
+          provider_name?: string | null;
+          remarks?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: never;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      save_assessment: {
+        Args: { p_payload: Json };
+        Returns: void;
+      };
+      save_care_plan: {
+        Args: { p_payload: Json };
+        Returns: void;
+      };
+      create_successor_care_plan: {
+        Args: { p_new_plan: Json; p_predecessor_id: string };
+        Returns: void;
+      };
+      search_knowledge: {
+        Args: {
+          p_query_embedding: string;
+          p_tenant_id: string;
+          p_top_k?: number;
+          p_min_similarity?: number;
+        };
+        Returns: Array<{
+          chunk_id: string;
+          document_id: string;
+          document_title: string;
+          chunk_text: string;
+          page_number: number | null;
+          scope: 'personal' | 'shared';
+          similarity: number;
+        }>;
+      };
+    };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
   };
