@@ -59,9 +59,17 @@ export default async function AssessmentDetailPage({ params }: Props) {
               </span>
             </p>
           </div>
-          {editable && (
-            <FinalizeButton careRecipientId={id} assessmentId={dto.id} />
-          )}
+          <div className="flex items-center gap-2">
+            {dto.status === AssessmentStatus.Finalized && (
+              <Link
+                href={`/care-recipients/${id}/care-plans/draft/${dto.id}`}
+                className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700"
+              >
+                ケアプランドラフト作成
+              </Link>
+            )}
+            {editable && <FinalizeButton careRecipientId={id} assessmentId={dto.id} />}
+          </div>
         </div>
       </div>
 

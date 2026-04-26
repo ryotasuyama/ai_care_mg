@@ -40,6 +40,12 @@ export default async function CareRecipientDetailPage({ params }: Props) {
             アセスメント
           </Link>
           <Link
+            href={`/care-recipients/${id}/care-plans`}
+            className="rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200"
+          >
+            ケアプラン
+          </Link>
+          <Link
             href={`/care-recipients/${id}/assessments/new`}
             className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700"
           >
