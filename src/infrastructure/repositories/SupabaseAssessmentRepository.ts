@@ -6,13 +6,7 @@ import { AssessmentId } from '@/domain/care-management/assessment/AssessmentId';
 import type { CareRecipientId } from '@/domain/care-management/care-recipient/CareRecipientId';
 import type { TenantId } from '@/domain/shared/TenantId';
 import { AssessmentMapper } from './mappers/AssessmentMapper';
-
-export class OptimisticLockError extends Error {
-  constructor(message = '他のユーザーが同時に更新しました。再読み込みしてください。') {
-    super(message);
-    this.name = 'OptimisticLockError';
-  }
-}
+import { OptimisticLockError } from '@/domain/shared/errors/OptimisticLockError';
 
 export class RepositoryError extends Error {
   constructor(message: string) {

@@ -8,7 +8,7 @@ import { AssessmentIssueId } from '@/domain/care-management/assessment/Assessmen
 import type { IAssessmentRepository } from '@/domain/care-management/assessment/IAssessmentRepository';
 import { AssessmentValidationError } from '@/domain/care-management/assessment/AssessmentValidationError';
 import { IllegalStateTransitionError } from '@/domain/shared/errors/IllegalStateTransitionError';
-import { OptimisticLockError } from '@/infrastructure/repositories/SupabaseAssessmentRepository';
+import { OptimisticLockError } from '@/domain/shared/errors/OptimisticLockError';
 
 export const removeAssessmentIssueSchema = z.object({
   assessmentId: z.string().uuid(),

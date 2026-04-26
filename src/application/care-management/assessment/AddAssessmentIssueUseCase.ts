@@ -12,7 +12,7 @@ import {
 } from '@/domain/care-management/assessment/IssueCategory';
 import { AssessmentValidationError } from '@/domain/care-management/assessment/AssessmentValidationError';
 import { IllegalStateTransitionError } from '@/domain/shared/errors/IllegalStateTransitionError';
-import { OptimisticLockError } from '@/infrastructure/repositories/SupabaseAssessmentRepository';
+import { OptimisticLockError } from '@/domain/shared/errors/OptimisticLockError';
 
 export const addAssessmentIssueSchema = z.object({
   assessmentId: z.string().uuid(),
