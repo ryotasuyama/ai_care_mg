@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useState } from 'react';
+import { useActionState, useState, useTransition } from 'react';
 import {
   CARE_LEVEL_VALUES,
   CARE_LEVEL_LABELS,
@@ -32,7 +32,8 @@ export function CareRecipientForm({ action, submitLabel, defaultValues }: Props)
     return null;
   };
 
-  const [state, formAction, isPending] = useActionState(wrappedAction, null);
+  const [state, formAction] = useActionState(wrappedAction, null);
+  const [isPending, startTransition] = useTransition();
   const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>(
     defaultValues?.familyMembers ?? [],
   );
@@ -41,7 +42,7 @@ export function CareRecipientForm({ action, submitLabel, defaultValues }: Props)
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     fd.set('familyMembers', JSON.stringify(familyMembers));
-    formAction(fd);
+    startTransition(() => formAction(fd));
   };
 
   const addFamilyMember = () => {

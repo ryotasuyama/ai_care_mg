@@ -34,7 +34,7 @@ test.describe('利用者管理フロー', () => {
     await page.waitForURL('**/care-recipients');
     await expect(page.locator(`text=${testName}`)).toBeVisible();
 
-    await page.click(`text=${testName}`);
+    await page.getByRole('row', { name: testName }).getByRole('link', { name: '詳細' }).click();
     await page.waitForURL('**/care-recipients/**');
     await expect(page.locator('h1')).toContainText(testName);
     await expect(page.locator('text=要介護2')).toBeVisible();
@@ -53,7 +53,8 @@ test.describe('利用者管理フロー', () => {
     await page.waitForURL('**/care-recipients');
 
     // 詳細 → 編集
-    await page.click(`text=${testName}`);
+    await page.getByRole('row', { name: testName }).getByRole('link', { name: '詳細' }).click();
+    await page.waitForURL('**/care-recipients/**');
     await page.click('text=編集');
     await page.waitForURL('**/edit');
 
