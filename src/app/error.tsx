@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import Link from 'next/link';
 import * as Sentry from '@sentry/nextjs';
 
 const ERROR_MESSAGES: Record<string, string> = {
@@ -41,9 +42,9 @@ export default function GlobalError({ error, reset }: Props) {
           再試行
         </button>
         <p className="mt-3 text-sm text-gray-500">
-          <a href="/" className="text-blue-600 hover:underline">
+          <Link href="/" className="text-blue-600 hover:underline">
             トップページへ
-          </a>
+          </Link>
         </p>
       </div>
     </div>
