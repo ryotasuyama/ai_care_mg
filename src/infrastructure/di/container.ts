@@ -40,6 +40,7 @@ import { GeminiCarePlanGenerationService } from '@/infrastructure/ai/GeminiCareP
 import { GeminiEmailReplyDraftService } from '@/infrastructure/ai/GeminiEmailReplyDraftService';
 import { GeminiEmbeddingService } from '@/infrastructure/ai/GeminiEmbeddingService';
 import { StructuredPiiMaskingService } from '@/infrastructure/ai/masking/StructuredPiiMaskingService';
+import { DraftEmailReplyUseCase } from '@/application/communication/DraftEmailReplyUseCase';
 import { config } from '@/config';
 
 export async function buildContainer() {
@@ -123,6 +124,12 @@ export async function buildContainer() {
     finalizeCarePlanUseCase: new FinalizeCarePlanUseCase(carePlanRepo),
     archiveCarePlanUseCase: new ArchiveCarePlanUseCase(carePlanRepo),
     createSuccessorCarePlanUseCase: new CreateSuccessorCarePlanUseCase(carePlanRepo),
+    draftEmailReplyUseCase: new DraftEmailReplyUseCase(
+      careRecipientRepo,
+      piiMaskingService,
+      emailReplyDraftService,
+      aiGenerationLogRepo,
+    ),
   };
 }
 
