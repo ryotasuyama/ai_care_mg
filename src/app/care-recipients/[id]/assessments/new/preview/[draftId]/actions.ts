@@ -39,6 +39,7 @@ export async function generateAssessmentAction(
     if (error instanceof UseCaseError) {
       return { error: error.message };
     }
+    console.error('[generateAssessmentAction] unexpected error:', error);
     return { error: '予期しないエラーが発生しました' };
   }
 
