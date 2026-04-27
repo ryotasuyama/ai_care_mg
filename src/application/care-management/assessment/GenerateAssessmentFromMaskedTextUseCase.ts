@@ -67,9 +67,18 @@ export class GenerateAssessmentFromMaskedTextUseCase
     verifyNoPiiLeak(input.approvedMaskedText, draft.maskingResult);
 
     // 3. AI 要約 (マスク済み入力)
-    const summarization = await this.aiSummarization.summarizeAsAssessment({
-      maskedText: input.approvedMaskedText,
-    });
+    let summarization: Awaited<ReturnType<typeof this.aiSummarization.summarizeAsAssessment>>;
+    try {
+      summarization = await this.aiSummarization.summarizeAsAssessment({
+        maskedText: input.approvedMaskedText,
+      });
+    } catch (cause) {
+      throw new UseCaseError(
+        'INTERNAL_ERROR',
+        'AI 要約の生成に失敗しました。しばらくしてから再試行してください。',
+        cause instanceof Error ? cause : undefined,
+      );
+    }
 
     if (summarization.issues.length === 0) {
       throw new UseCaseError(

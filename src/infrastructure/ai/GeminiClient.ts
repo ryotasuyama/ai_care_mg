@@ -157,13 +157,7 @@ export class GeminiClient {
         return response.json();
       }
 
-      // 4xx は即失敗（プロンプト・認証バグ）
-      if (response.status >= 400 && response.status < 500) {
-        const text = await response.text().catch(() => '');
-        throw new Error(`Gemini API error ${response.status}: ${text.slice(0, 300)}`);
-      }
-
-      // 429 レート制限
+      // 429 レート制限（リトライ対象。4xx チェックより先に評価する）
       if (response.status === 429) {
         if (attempt >= MAX_RETRIES) break;
         const retryAfter = response.headers.get('Retry-After');
@@ -171,6 +165,12 @@ export class GeminiClient {
         await sleep(waitMs);
         lastError = new Error(`Gemini rate limited (429)`);
         continue;
+      }
+
+      // その他の 4xx は即失敗（プロンプト・認証バグ）
+      if (response.status >= 400 && response.status < 500) {
+        const text = await response.text().catch(() => '');
+        throw new Error(`Gemini API error ${response.status}: ${text.slice(0, 300)}`);
       }
 
       // 5xx サーバーエラー

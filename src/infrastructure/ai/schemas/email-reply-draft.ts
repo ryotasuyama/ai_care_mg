@@ -7,5 +7,12 @@ export const EmailReplyDraftResponseSchema = z.object({
 
 export type EmailReplyDraftResponse = z.infer<typeof EmailReplyDraftResponseSchema>;
 
-export const emailReplyDraftResponseJsonSchema =
-  z.toJSONSchema(EmailReplyDraftResponseSchema);
+// Gemini 互換スキーマ（minLength / maxLength 等を除去）
+export const emailReplyDraftResponseJsonSchema = {
+  type: 'object',
+  properties: {
+    subject: { type: 'string' },
+    body: { type: 'string' },
+  },
+  required: ['subject', 'body'],
+} as const;
