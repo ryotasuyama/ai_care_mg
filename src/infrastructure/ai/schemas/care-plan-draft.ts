@@ -27,5 +27,60 @@ export const CarePlanDraftResponseSchema = z.object({
 
 export type CarePlanDraftResponse = z.infer<typeof CarePlanDraftResponseSchema>;
 
-export const carePlanDraftResponseJsonSchema =
-  z.toJSONSchema(CarePlanDraftResponseSchema);
+// Gemini 互換スキーマ（minLength / maxLength / minItems / maxItems 等を除去）
+export const carePlanDraftResponseJsonSchema = {
+  type: 'object',
+  properties: {
+    longTermGoals: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          title: { type: 'string' },
+          description: { type: 'string' },
+          targetPeriodMonths: { type: 'integer' },
+        },
+        required: ['title', 'description', 'targetPeriodMonths'],
+      },
+    },
+    shortTermGoals: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          parentLongTermGoalIndex: { type: 'integer' },
+          title: { type: 'string' },
+          description: { type: 'string' },
+          targetPeriodMonths: { type: 'integer' },
+        },
+        required: ['parentLongTermGoalIndex', 'title', 'description', 'targetPeriodMonths'],
+      },
+    },
+    serviceItemCandidates: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          relatedShortTermGoalIndex: { type: 'integer' },
+          serviceType: { type: 'string' },
+          serviceName: { type: 'string' },
+          frequencyText: { type: 'string' },
+          remarks: { type: 'string' },
+        },
+        required: ['relatedShortTermGoalIndex', 'serviceType', 'serviceName', 'frequencyText'],
+      },
+    },
+    citations: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          knowledgeIndex: { type: 'integer' },
+          usedFor: { type: 'string' },
+        },
+        required: ['knowledgeIndex', 'usedFor'],
+      },
+    },
+  },
+  required: ['longTermGoals', 'shortTermGoals', 'serviceItemCandidates', 'citations'],
+} as const;
