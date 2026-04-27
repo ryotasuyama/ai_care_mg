@@ -59,6 +59,14 @@ export async function AppHeader() {
               >
                 メール返信
               </Link>
+              {userProfile?.role === 'admin' && (
+                <Link
+                  href="/admin/invite"
+                  className="rounded-md px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                >
+                  ユーザー招待
+                </Link>
+              )}
             </nav>
           )}
         </div>
@@ -91,6 +99,14 @@ export async function AppHeader() {
               >
                 メール返信
               </Link>
+              {userProfile?.role === 'admin' && (
+                <Link
+                  href="/admin/invite"
+                  className="rounded-md px-2 py-1 text-xs font-medium text-gray-600 hover:bg-gray-100"
+                >
+                  招待
+                </Link>
+              )}
             </nav>
 
             <UserMenu
