@@ -61,9 +61,12 @@ export function CarePlanDraftView({ recipientId, assessmentId, recipientName }: 
     return d.toISOString().slice(0, 10);
   })();
 
-  const [planNumber, setPlanNumber] = useState(
-    `CP-${new Date().toISOString().slice(0, 7)}-${recipientId.slice(0, 4)}`,
-  );
+  const [planNumber, setPlanNumber] = useState(() => {
+    const now = new Date();
+    const yyyyMm = now.toISOString().slice(0, 7);
+    const hhmmss = now.toTimeString().slice(0, 8).replace(/:/g, '');
+    return `CP-${yyyyMm}-${recipientId.slice(0, 4)}-${hhmmss}`;
+  });
   const [planFrom, setPlanFrom] = useState(today);
   const [planTo, setPlanTo] = useState(sixMonthsLater);
 
