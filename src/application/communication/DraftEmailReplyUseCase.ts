@@ -13,8 +13,6 @@ import type { IEmailReplyDraftService } from '@/domain/ai-support/IEmailReplyDra
 import type { IAiGenerationLogRepository } from '@/domain/ai-support/IAiGenerationLogRepository';
 import type { MaskingStatistics } from '@/domain/ai-support/masking/MaskingResult';
 
-const AI_MODEL = 'gemini-1.5-flash';
-
 const draftEmailReplySchema = z.object({
   incomingEmailBody: z
     .string()
@@ -41,6 +39,7 @@ export class DraftEmailReplyUseCase
     private readonly piiMasking: IPiiMaskingService,
     private readonly emailReplyDraftService: IEmailReplyDraftService,
     private readonly aiLogRepo: IAiGenerationLogRepository,
+    private readonly aiModel: string,
   ) {}
 
   async execute(input: DraftEmailReplyInput): Promise<DraftEmailReplyOutput> {
@@ -89,7 +88,7 @@ export class DraftEmailReplyUseCase
       })),
       maskingStats: maskingResult.statistics,
       aiResponse: draftResult.rawResponse,
-      aiModel: AI_MODEL,
+      aiModel: this.aiModel,
       promptTemplateId: draftResult.promptTemplateId,
       createdBy: userId,
       requestTokens: draftResult.tokenUsage.requestTokens,

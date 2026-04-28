@@ -68,7 +68,7 @@ describe('DraftEmailReplyUseCase', () => {
     const emailReplyService = makeMockEmailReplyService();
     const aiLogRepo = makeMockAiLogRepo();
 
-    const uc = new DraftEmailReplyUseCase(careRecipientRepo, piiMasking, emailReplyService, aiLogRepo);
+    const uc = new DraftEmailReplyUseCase(careRecipientRepo, piiMasking, emailReplyService, aiLogRepo, 'test-model');
 
     const result = await uc.execute({
       auth: makeAuth(),
@@ -115,6 +115,7 @@ describe('DraftEmailReplyUseCase', () => {
       makeMockPiiMasking(),
       makeMockEmailReplyService(),
       makeMockAiLogRepo(),
+      'test-model',
     );
 
     await expect(
@@ -132,6 +133,7 @@ describe('DraftEmailReplyUseCase', () => {
       makeMockPiiMasking(),
       makeMockEmailReplyService(),
       makeMockAiLogRepo(),
+      'test-model',
     );
 
     await expect(
@@ -146,6 +148,7 @@ describe('DraftEmailReplyUseCase', () => {
       makeMockPiiMasking(),
       emailReplyService,
       makeMockAiLogRepo(),
+      'test-model',
     );
 
     await uc.execute({ auth: makeAuth(), incomingEmailBody: 'テストメール本文' });
@@ -186,6 +189,7 @@ describe('DraftEmailReplyUseCase', () => {
       piiMasking,
       emailReplyService,
       makeMockAiLogRepo(),
+      'test-model',
     );
 
     const result = await uc.execute({ auth: makeAuth(), incomingEmailBody: '090-1234-5678 まで連絡ください' });

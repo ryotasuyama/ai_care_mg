@@ -54,7 +54,11 @@ export async function buildContainer() {
   const knowledgeStorage = new SupabaseKnowledgeStorageService(supabase);
   const carePlanRepo = new SupabaseCarePlanRepository(supabase);
 
-  const geminiClient = new GeminiClient(config.gemini.apiKey);
+  const geminiClient = new GeminiClient(
+    config.gemini.apiKey,
+    config.gemini.model,
+    config.gemini.embeddingModel,
+  );
 
   const aiSummarizationService = new GeminiAiSummarizationService(geminiClient);
   const carePlanGenerationService = new GeminiCarePlanGenerationService(geminiClient);
@@ -92,6 +96,7 @@ export async function buildContainer() {
       assessmentRepo,
       aiSummarizationService,
       aiGenerationLogRepo,
+      config.gemini.model,
     ),
     getAssessmentForViewUseCase: new GetAssessmentForViewUseCase(assessmentRepo),
     listAssessmentsUseCase: new ListAssessmentsUseCase(assessmentRepo, careRecipientRepo),
@@ -115,6 +120,7 @@ export async function buildContainer() {
       piiMaskingService,
       carePlanGenerationService,
       aiGenerationLogRepo,
+      config.gemini.model,
     ),
     createCarePlanFromDraftUseCase: new CreateCarePlanFromDraftUseCase(
       assessmentRepo,
@@ -131,6 +137,7 @@ export async function buildContainer() {
       piiMaskingService,
       emailReplyDraftService,
       aiGenerationLogRepo,
+      config.gemini.model,
     ),
   };
 }
@@ -142,7 +149,11 @@ export function buildJobContainer() {
   const adminClient = createSupabaseServiceRoleClient();
   const knowledgeDocumentRepo = new SupabaseKnowledgeDocumentRepository(adminClient, adminClient);
   const knowledgeStorage = new SupabaseKnowledgeStorageService(adminClient, adminClient);
-  const geminiClient = new GeminiClient(config.gemini.apiKey);
+  const geminiClient = new GeminiClient(
+    config.gemini.apiKey,
+    config.gemini.model,
+    config.gemini.embeddingModel,
+  );
   const embeddingService = new GeminiEmbeddingService(geminiClient);
   const extractor = new DefaultTextExtractor();
   const chunker = new SimpleTextChunker();
