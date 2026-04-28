@@ -15,6 +15,10 @@ type LtgRow = Database['public']['Tables']['care_plan_long_term_goals']['Row'];
 type StgRow = Database['public']['Tables']['care_plan_short_term_goals']['Row'];
 type SvcRow = Database['public']['Tables']['care_plan_service_items']['Row'];
 
+function isPlanNumberDuplicateError(message: string): boolean {
+  return message.includes('care_plan_number_unique_per_tenant');
+}
+
 export class SupabaseCarePlanRepository implements ICarePlanRepository {
   constructor(private readonly supabase: SupabaseClient<Database>) {}
 
@@ -108,6 +112,13 @@ export class SupabaseCarePlanRepository implements ICarePlanRepository {
       if (error.message.includes('version_conflict')) {
         throw new OptimisticLockError();
       }
+      if (isPlanNumberDuplicateError(error.message)) {
+        throw new UseCaseError(
+          'INVALID_INPUT',
+          `プラン番号「${carePlan.planNumber}」は既に使われています。別の番号を入力してください。`,
+          error,
+        );
+      }
       throw new RepositoryError(error.message);
     }
   }
@@ -123,6 +134,13 @@ export class SupabaseCarePlanRepository implements ICarePlanRepository {
         throw new UseCaseError(
           'INVALID_INPUT',
           '後継プランは確定済みプランに対してのみ作成できます',
+          error,
+        );
+      }
+      if (isPlanNumberDuplicateError(error.message)) {
+        throw new UseCaseError(
+          'INVALID_INPUT',
+          `プラン番号「${newPlan.planNumber}」は既に使われています。別の番号を入力してください。`,
           error,
         );
       }
