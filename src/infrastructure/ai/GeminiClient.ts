@@ -54,8 +54,8 @@ async function sleep(ms: number): Promise<void> {
 export class GeminiClient {
   constructor(
     private readonly apiKey: string,
-    private readonly model: string = 'gemini-1.5-flash',
-    private readonly embeddingModel: string = 'text-embedding-004',
+    private readonly model: string,
+    private readonly embeddingModel: string,
   ) {}
 
   async generateJson(params: GeminiGenerateJsonParams): Promise<GeminiGenerateJsonResult> {
@@ -113,6 +113,8 @@ export class GeminiClient {
         parts: [{ text: params.text }],
       },
       taskType: params.taskType ?? 'RETRIEVAL_DOCUMENT',
+      // DB schema は VECTOR(768) のため次元数を 768 に固定する
+      outputDimensionality: 768,
     };
 
     const rawResponse = await this.fetchWithRetry(url, body);

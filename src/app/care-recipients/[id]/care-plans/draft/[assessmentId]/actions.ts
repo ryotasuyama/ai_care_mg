@@ -25,6 +25,7 @@ export async function generateCarePlanDraftAction(
     return { draft };
   } catch (error) {
     if (error instanceof UseCaseError) return { error: error.message };
+    console.error('[generateCarePlanDraftAction] unexpected error:', error);
     return { error: '予期しないエラーが発生しました' };
   }
 }
@@ -77,6 +78,7 @@ export async function adoptCarePlanDraftAction(
     carePlanId = result.carePlanId;
   } catch (error) {
     if (error instanceof UseCaseError) return { error: error.message };
+    console.error('[adoptCarePlanDraftAction] unexpected error:', error);
     return { error: '予期しないエラーが発生しました' };
   }
   revalidatePath(`/care-recipients/${payload.recipientId}/care-plans`);

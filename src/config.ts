@@ -15,6 +15,8 @@ export const config = {
   },
   gemini: {
     apiKey: required('GEMINI_API_KEY'),
+    model: process.env['GEMINI_MODEL'] ?? 'gemini-3.1-flash-lite-preview',
+    embeddingModel: process.env['GEMINI_EMBEDDING_MODEL'] ?? 'gemini-embedding-001',
   },
   cron: {
     secret: process.env['CRON_SECRET'] ?? '',

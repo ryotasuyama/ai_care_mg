@@ -40,7 +40,7 @@ export class GenerateAssessmentFromMaskedTextUseCase
     private readonly assessmentRepo: IAssessmentRepository,
     private readonly aiSummarization: IAiSummarizationService,
     private readonly aiLogRepo: IAiGenerationLogRepository,
-    private readonly aiModel: string = 'gemini-1.5-flash',
+    private readonly aiModel: string,
   ) {}
 
   async execute(
@@ -73,6 +73,7 @@ export class GenerateAssessmentFromMaskedTextUseCase
         maskedText: input.approvedMaskedText,
       });
     } catch (cause) {
+      console.error('[GenerateAssessmentFromMaskedTextUseCase] AI summarization failed:', cause);
       throw new UseCaseError(
         'INTERNAL_ERROR',
         'AI 要約の生成に失敗しました。しばらくしてから再試行してください。',

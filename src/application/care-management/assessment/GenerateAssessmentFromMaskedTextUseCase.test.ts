@@ -76,6 +76,7 @@ describe('GenerateAssessmentFromMaskedTextUseCase', () => {
       assessmentRepo,
       makeMockSummarization(),
       aiLogRepo,
+      'test-model',
     );
 
     const result = await uc.execute({
@@ -116,6 +117,7 @@ describe('GenerateAssessmentFromMaskedTextUseCase', () => {
       assessmentRepo,
       makeMockSummarization(),
       aiLogRepo,
+      'test-model',
     );
 
     await expect(
@@ -150,6 +152,7 @@ describe('GenerateAssessmentFromMaskedTextUseCase', () => {
       assessmentRepo,
       makeMockSummarization(),
       aiLogRepo,
+      'test-model',
     );
 
     // 既知 PII を編集で書き戻したケース
@@ -186,6 +189,7 @@ describe('GenerateAssessmentFromMaskedTextUseCase', () => {
       assessmentRepo,
       makeMockSummarization(),
       aiLogRepo,
+      'test-model',
     );
 
     await expect(

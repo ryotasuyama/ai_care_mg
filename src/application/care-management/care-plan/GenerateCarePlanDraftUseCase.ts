@@ -43,8 +43,6 @@ export interface GenerateCarePlanDraftOutput {
   assessmentSummaryUnmasked: string;
 }
 
-const AI_MODEL = 'gemini-1.5-flash';
-
 export class GenerateCarePlanDraftUseCase
   implements IUseCase<GenerateCarePlanDraftInput, GenerateCarePlanDraftOutput>
 {
@@ -55,6 +53,7 @@ export class GenerateCarePlanDraftUseCase
     private readonly piiMasking: IPiiMaskingService,
     private readonly carePlanGeneration: ICarePlanGenerationService,
     private readonly aiLogRepo: IAiGenerationLogRepository,
+    private readonly aiModel: string,
   ) {}
 
   async execute(input: GenerateCarePlanDraftInput): Promise<GenerateCarePlanDraftOutput> {
@@ -127,19 +126,29 @@ export class GenerateCarePlanDraftUseCase
     );
 
     // 5. ケアプランドラフト生成 (マスク済み入力)
-    const generation = await this.carePlanGeneration.generateDraft({
-      assessmentMaskedSummary: assessment.maskedSummary,
-      issuesMasked: assessment.issues.map((i) => ({
-        category: i.category,
-        description: i.description,
-        priority: i.priority,
-      })),
-      recipientContext: {
-        careLevel: recipient.currentCareLevel.value,
-        ageRange: recipient.ageRange,
-      },
-      knowledgeSnippets: reMaskedSnippets,
-    });
+    let generation: Awaited<ReturnType<typeof this.carePlanGeneration.generateDraft>>;
+    try {
+      generation = await this.carePlanGeneration.generateDraft({
+        assessmentMaskedSummary: assessment.maskedSummary,
+        issuesMasked: assessment.issues.map((i) => ({
+          category: i.category,
+          description: i.description,
+          priority: i.priority,
+        })),
+        recipientContext: {
+          careLevel: recipient.currentCareLevel.value,
+          ageRange: recipient.ageRange,
+        },
+        knowledgeSnippets: reMaskedSnippets,
+      });
+    } catch (cause) {
+      console.error('[GenerateCarePlanDraftUseCase] AI generation failed:', cause);
+      throw new UseCaseError(
+        'INTERNAL_ERROR',
+        'ケアプランドラフトの生成に失敗しました。しばらくしてから再試行してください。',
+        cause instanceof Error ? cause : undefined,
+      );
+    }
 
     // 6. AI 生成ログ記録 (related_entity = assessment)
     await this.aiLogRepo.save({
@@ -152,7 +161,7 @@ export class GenerateCarePlanDraftUseCase
         category: p.category,
       })),
       aiResponse: generation.rawResponse,
-      aiModel: AI_MODEL,
+      aiModel: this.aiModel,
       promptTemplateId: generation.promptTemplateId,
       relatedEntityType: 'assessment',
       relatedEntityId: assessment.id.value,
